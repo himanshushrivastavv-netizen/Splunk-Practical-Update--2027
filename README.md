@@ -1,17 +1,14 @@
 # Splunk SOC Analyst Practical Labs 🛡️
 
-A structured hands-on repository documenting security analysis, telemetry baseline profiling, threat triage, and Search Processing Language (SPL) practicals executed on local Splunk Enterprise.
+A structured hands-on repository documenting security analysis, telemetry baseline profiling, and Search Processing Language (SPL) practicals executed on local Splunk Enterprise.
 
 ---
 
-## 📂 Repository Structure & Navigation
+## 📂 Repository Navigation
 
-| Module | Practical Name | Focus Area | Status | Link |
+| Practical | Name | Focus Area | Status | Link |
 | :--- | :--- | :--- | :---: | :--- |
-| **B1** | **Baseline Data Inventory** | Telemetry Discovery & Sourcetype Profiling | ✅ Completed | [View Notes](./practicals/B1-data-inventory.md) |
-| **B2** | **Error & Anomaly Triage** | Daemon Component Failures & Warning Analysis | ⏳ In Progress | [View Notes](./practicals/B2-anomaly-detection.md) |
-| **B3** | **Access & Endpoint Telemetry** | HTTP Status Codes & REST API Audit | 📋 Planned | [View Notes](./practicals/B3-access-telemetry.md) |
-| **B4** | **Detection Rules & Alerting** | Threshold-based Anomaly Alerting | 📋 Planned | [View Notes](./practicals/B4-detection-rules.md) |
+| **Splunk Prac-1** | **Baseline Data Inventory** | Telemetry Discovery & Sourcetype Profiling | ✅ Completed | [View Notes](./practicals/splunk-prac-1.md) |
 
 ---
 
@@ -24,10 +21,11 @@ A structured hands-on repository documenting security analysis, telemetry baseli
 
 ## 🚀 Quick Execution Index
 
-### [B1: Baseline Data Inventory](./practicals/B1-data-inventory.md)
+### [Splunk Prac-1: Baseline Data Inventory](./practicals/splunk-prac-1.md)
 - **Goal:** Ingest telemetry baseline and map high-volume event producers.
 - **Primary SPL:**
   ```spl
   index=_internal earliest=-7d
   | stats count by sourcetype
   | sort - count
+  
