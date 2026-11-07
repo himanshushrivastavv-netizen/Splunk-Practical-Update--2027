@@ -1,0 +1,20 @@
+ Splunk Practical 01: Baseline Data Inventory (B1)
+
+1. Objective & Scope
+Objective: Perform baseline data discovery and telemetry classification on ingested index streams using Search Processing Language (SPL).
+Environment: Splunk Enterprise (Windows Local Instance)
+Target Index: `_internal` (System Diagnostic & Access Telemetry)
+ 2. Practical Execution: Data Inventory
+ SPL Query Executed
+index=_internal earliest=-7d
+| stats count by sourcetype
+| sort - count
+
+SPL Query Explanation
+index=_internal : Splunk ke internal diagnostics aur operational log storage ko search target banata hai.
+
+earliest=-7d : Pichle 7 din ka time window filter karta hai taaki purane data ki scanning na ho aur performance fast rahe.
+
+| stats count by sourcetype : Raw log events ko pipe karke har unique log type (sourcetype) ke total events ka count calculate karta hai aur table banata hai.
+
+| sort - count : Minus (-) sign ke sath count ko descending order me sort karta hai taaki sabse zyada logs generate karne wale sources sabse upar dikhein.
