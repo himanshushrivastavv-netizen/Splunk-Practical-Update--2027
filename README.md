@@ -8,7 +8,7 @@ A structured hands-on repository documenting security analysis, telemetry baseli
 
 | Practical | Name | Focus Area | Status | Link |
 | :--- | :--- | :--- | :---: | :--- |
-| **Splunk Prac-1** | **Baseline Data Inventory** | Telemetry Discovery & Sourcetype Profiling | ✅ Completed | [View Notes](./practicals/splunk-prac-1.md) |
+| **Splunk Prac-1** | **Baseline Data Inventory** | Telemetry Discovery & Sourcetype Profiling | ✅ Completed | [View Notes](./practicals/Splunk Prac-1.md) |
 
 ---
 
