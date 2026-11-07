@@ -8,7 +8,7 @@ A structured hands-on repository documenting security analysis, telemetry baseli
 
 | Practical | Name | Focus Area | Status | Link |
 | :--- | :--- | :--- | :---: | :--- |
-| **Splunk Prac-1** | **Baseline Data Inventory** | Telemetry Discovery & Sourcetype Profiling | ✅ Completed | [View Notes](./practicals/Splunk Prac-1.md) |
+| **Splunk Prac-1** | **Baseline Data Inventory** | Telemetry Discovery & Sourcetype Profiling | ✅ Completed | [View Notes](./Splunk%20Prac-1) |
 
 ---
 
@@ -21,11 +21,10 @@ A structured hands-on repository documenting security analysis, telemetry baseli
 
 ## 🚀 Quick Execution Index
 
-### [Splunk Prac-1: Baseline Data Inventory](./practicals/splunk-prac-1.md)
+### [Splunk Prac-1: Baseline Data Inventory](./Splunk%20Prac-1)
 - **Goal:** Ingest telemetry baseline and map high-volume event producers.
 - **Primary SPL:**
   ```spl
   index=_internal earliest=-7d
   | stats count by sourcetype
   | sort - count
-  
