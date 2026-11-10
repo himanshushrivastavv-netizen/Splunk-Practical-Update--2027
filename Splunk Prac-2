@@ -1,0 +1,86 @@
+Splunk Practical 02: Exploring Raw Events and Fields (B2)
+
+1. Objective & Scope
+Objective: Expand a raw event to see how Splunk builds fields, and learn to filter and aggregate on those fields.
+Environment: Splunk Enterprise (Windows Local Instance)
+Target Index: `main` (BOTS v1 dataset not used; my own laptop's Windows Security logs were ingested instead)
+Host: Himanshu
+Source: WinEventLog:Security
+Time Range: All time
+
+Setup (how the data was ingested):
+Settings > Add Data > Monitor > Local Event Logs > selected Security > Host: Himanshu, Index: main > Submit.
+Total events indexed: 33,068
+
+2. Practical Execution: Raw Events and Fields
+
+SPL Query 1 (view events)
+index=main source="WinEventLog:Security" earliest=0
+| head 20
+
+SPL Query 2 (EventCode inventory across all data)
+index=main source="WinEventLog:Security" earliest=0
+| stats count by EventCode
+| sort - count
+
+SPL Query 3 (filter out noise)
+index=main source="WinEventLog:Security" earliest=0 NOT EventCode=5379
+| head 20
+
+3. SPL Query Explanation
+index=main : Sets the search target to the index where the Windows logs were ingested.
+
+source="WinEventLog:Security" : Limits results to Windows Security logs only. Quotes are needed because the name contains a colon. (For local logs this value is the source; in BOTS v1 it was the sourcetype.)
+
+earliest=0 : Starts the time range from the oldest available data, so all data is searched.
+
+| head 20 : Returns only the 20 most recent events. This is a sample, not the full picture.
+
+| stats count by EventCode : Counts events for each unique EventCode and builds a table.
+
+| sort - count : Sorts the count in descending order, highest first.
+
+NOT EventCode=5379 : Removes the noisy 5379 events from the results.
+
+4. Steps Performed
+1. Ran Query 1 and expanded an event using the left arrow (>).
+2. Reviewed the fields in the Interesting Fields sidebar: Account_Name, Account_Domain, ComputerName, EventCode, Keywords, etc.
+3. Clicked the EventCode field to open its popup (top values, count, percentage).
+4. Ran Query 2 to get the EventCode count across the whole dataset.
+
+5. Observations (Results)
+Total events: 33,068
+Distinct EventCodes: 25
+
+Top EventCodes:
+5379 (28,252): Credential Manager credentials were read. Normal background activity from Windows/apps and the biggest source of noise.
+4799 (1,123): Local group membership was enumerated. Normal system activity.
+4624 (855): Successful logon.
+4672 (786): Special (admin-level) privileges assigned to a new logon.
+5061 (528), 5058 (490), 5059 (309): Cryptographic/key operations. Normal.
+4798 (194): A user's local group membership was enumerated.
+4688 (156): A new process was created.
+4648 (133): Logon attempted using explicit credentials.
+4634 (73): Logoff.
+
+One 4624 event was expanded and reviewed:
+Account Name (Subject): HIMANSHU$ (machine account; the `$` indicates a computer account)
+Account Domain: WORKGROUP (PC is not part of a domain)
+Logon Type: 5 (service logon)
+New Logon Account: SYSTEM
+Elevated Token: Yes
+Meaning: This was not a human login, but a normal Windows service startup logon.
+
+6. Key Learnings
+1. Splunk breaks every log into fields. The fields you can filter or aggregate on are what make an investigation possible (for example, EventCode=4625 for failed logins).
+2. `head 20` returns only the 20 most recent events. On my laptop, 5379 fires every few milliseconds, so the EventCode popup showed only 5379 (100%).
+3. To get the full picture, use `stats count by field`.
+4. High-count events are usually noise. Remove them with NOT to find rare or interesting events.
+5. Common Logon_Type values: 2 = interactive (keyboard), 5 = service, 7 = unlock.
+
+7. Useful EventCodes (quick reference)
+4624 = successful logon
+4625 = failed logon
+4672 = special privileges assigned
+4688 = new process created
+4634 / 4647 = logoff
