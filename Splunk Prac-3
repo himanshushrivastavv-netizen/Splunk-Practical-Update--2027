@@ -1,0 +1,39 @@
+Splunk Practical 03: Windows EventCode Distribution & Triage (B3)
+
+1. Objective & Scope
+Objective: Analyze Windows Security EventCode frequency distribution to identify baseline operational noise versus high-priority security alerts using Search Processing Language (SPL)[cite: 1, 5].
+Environment: Splunk Enterprise (Windows Local Instance)[cite: 5]
+Target Sourcetype: `WinEventLog:Security` (Total Events Analyzed: 92,396)[cite: 5]
+
+2. Practical Execution: EventCode Distribution
+SPL Query Executed
+index=* sourcetype="WinEventLog:Security" earliest=0
+| stats count by EventCode
+| sort - count
+
+SPL Query Explanation
+index=* : Sabhi available custom aur default indexes ko search target banata hai taaki ingested Windows Security logs miss na hon[cite: 5].
+
+sourcetype="WinEventLog:Security" : Sirf Windows Security audit logs ko filter karta hai jisme logon, process creation, aur policy changes record hote hain[cite: 1, 5].
+
+earliest=0 : Dataset ke shuruat se lekar ab tak ke saare historical events (All Time) ko scan karne ke liye time window set karta hai[cite: 1, 5].
+
+| stats count by EventCode : Raw security events ko pipe karke har unique Windows EventCode ke total occurrences calculate karta hai aur ek structured statistical table banata hai[cite: 1, 5].
+
+| sort - count : Minus (-) sign ke saath count ko descending order mein sort karta hai taaki sabse zyada generate hone wale EventCodes sabse upar dikhein[cite: 1, 5].
+
+3. Visualization & Key Findings (Noise vs. Signal)
+Visualization Used: Column / Bar Chart (via Splunk Visualization Tab)[cite: 1, 5]
+
+Top Baseline Noise EventCodes Identified:
+- EventCode 5379 (64,462 events) : Windows Credential Manager credentials read kiye gaye (Normal application & system background noise)[cite: 5].
+- EventCode 4907 (17,634 events) : Object par auditing settings change/check hui (Routine system & registry audit activity)[cite: 5].
+- EventCode 4799 (2,428 events) : Security-enabled local group membership enumerate hui (Local group verification noise)[cite: 5].
+- EventCode 4624 (1,971 events) : Account successfully logged on (Standard user/service logon activity)[cite: 5].
+- EventCode 4672 (1,813 events) : Special privileges assigned to new logon (Admin/System session initialization)[cite: 5].
+
+SOC Analyst Triage Insight (High-Value EventCodes):
+Zyadatar volume normal OS telemetry noise hota hai, isliye SOC analyst ka main focus anomalies aur critical execution events par hota hai[cite: 1]:
+- EventCode 4688 (New Process Created) : Dataset mein detected — yeh track karta hai ki kaun sa naya executable ya command-line process (e.g., cmd.exe, powershell.exe) run hua hai[cite: 1, 5].
+- EventCode 4648 (Logon Using Explicit Credentials) : Dataset mein detected — lateral movement aur `RunAs` credential usage monitor karne ke liye useful[cite: 5].
+- EventCode 4625 (Failed Logon), 4720 (User Account Created), & 1102 (Audit Log Cleared) : Is dataset ke top results mein absent hain, jo indicate karta hai ki brute-force attacks, unauthorized account creation, ya log tampering nahi hui hai[cite: 1, 5].
